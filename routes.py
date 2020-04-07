@@ -1,7 +1,6 @@
 from app import app
 from flask import render_template, url_for, request, session, redirect
 from db import db_user, db_links
-from send_emails import send_account_verification_email
 from bson import ObjectId
 
 @app.route('/')

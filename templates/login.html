@@ -363,6 +363,9 @@ switchers.forEach(item => {
     alert('User already Exists');
   {% endif %}
 
+  {% if account_verification %}
+     alert('Your account has now been verified, please log-in');
+  {% endif %}  
   </script>
 
   <h5 align='center' style="color: white;">Login Template: "Animated Form" by <a style="text-decoration: none; color: grey;" href="https://codepen.io/frontendmax">Maxim Konoval</a></h5>

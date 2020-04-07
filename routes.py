@@ -20,8 +20,7 @@ def register():
                 name,email,password = request.form['name'], request.form['email'], request.form['password']
                 if db_user.find({'email':email}).count()>0:
                         return render_template('login.html', user_already_exists=True)
-                user=db_user.insert_one({'name':name,'password':password,'email':email,'is_verified':0})
-                send_account_verification_email(request.form['email'],str(user.inserted_id))
+                user=db_user.insert_one({'name':name,'password':password,'email':email})
                 return redirect(url_for('index'))
         return render_template('login.html')
 
@@ -42,11 +41,6 @@ def logout():
         return redirect(url_for('index'))
 
 
-#user account verification and forgot password routes
-@app.route('/<string:user_id>/verify')
-def verify_user_account(user_id):
-        db_user.update_one({'_id':ObjectId(user_id)},{'$set':{'is_verified':1}})
-        return render_template('login.html',account_verification=True)
 
 
 

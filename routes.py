@@ -1,6 +1,7 @@
 from app import app
 from flask import render_template, url_for, request, session, redirect
 from db import db_user, db_links
+from send_emails import send_account_verification_email
 
 @app.route('/')
 def index():
@@ -15,8 +16,11 @@ def index():
 @app.route('/register',methods=['GET','POST'])
 def register(): 
         if request.method=='POST':
-                db_user.insert_one({'name':request.form['name'],'password':request.form['password'],'email':request.form['email'],'is_verified':0})
-                #send verification email
+                name,email,password = request.form['name'], request.form['email'], request.form['password']
+                if db_user.find({'email':email}).count()>0:
+                        return render_template('login.html', user_already_exists=True)
+                db_user.insert_one({'name':name,'password':password,'email':email,'is_verified':0})
+                #send_account_verification_email(request.form['email'])
                 return redirect(url_for('index'))
         return render_template('login.html')
 

@@ -356,7 +356,11 @@ switchers.forEach(item => {
 })
 
   {% if user_not_exists %}
-    alert('User Does not exists');
+    alert(' Such a User Does not exists');
+  {% endif %}
+
+  {% if user_already_exists %}
+    alert('User already Exists');
   {% endif %}
 
   </script>

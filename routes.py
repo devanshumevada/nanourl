@@ -21,7 +21,9 @@ def dashboard():
 
 #login, logout and register routes
 @app.route('/register',methods=['GET','POST'])
-def register(): 
+def register():
+        if user_logged_in():
+                return redirect(url_for('index'))
         if request.method=='POST':
                 name,email,password = request.form['name'], request.form['email'], request.form['password']
                 if db_user.find({'email':email}).count()>0:
@@ -32,6 +34,8 @@ def register():
 
 @app.route('/login',methods=['GET','POST'])
 def login():
+        if user_logged_in():
+                return redirect(url_for('index'))
         if request.method=='POST':
                user=db_user.find_one({'email':request.form['email'],'password':request.form['password']})
                if user is None:
@@ -56,8 +60,10 @@ def shorten_url():
                         return redirect(url_for('dashboard',url_not_valid=True))
 
                 
-
-
+#Other supplementary functions
+def user_logged_in():
+        if 'user' in session:
+                return True
 
 
 

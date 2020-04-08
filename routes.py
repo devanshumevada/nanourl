@@ -4,6 +4,7 @@ from db import db_user, db_links
 from bson import ObjectId
 from check_url import validate_url
 
+#index and dashboard
 @app.route('/')
 def index():
         if 'user' not in session:

@@ -3,6 +3,7 @@ from flask import render_template, url_for, request, session, redirect
 from db import db_user, db_links
 from bson import ObjectId
 from check_url import validate_url
+from generate_short_url_code import generate_short_code
 
 #index and dashboard
 @app.route('/')
@@ -51,14 +52,39 @@ def logout():
         return redirect(url_for('index'))
 
 
-#routes for adding and deleting a link
+#routes for adding, deleting a link and incrementing it's count on using it's short version
 @app.route('/shorten_url', methods=['POST','GET'])
 def shorten_url():
-        if request.method=='POST':
-                url = request.form['url']
-                if validate_url(url) is None:
-                        return redirect(url_for('dashboard',url_not_valid=True))
+        #Access only if authenticated
+        if user_logged_in():
+                if request.method=='POST':
+                        url = request.form['url']
+                        if validate_url(url) is None:
+                                return redirect(url_for('dashboard',url_not_valid=True))
+                        short_code = generate_short_code()
+                        db_links.insert_one({'url':url,'short_code':short_code,'user':session['user'],'count':0})
+                        return redirect(url_for('index'))
+                #On getting a GET request
+                return redirect(url_for('index'))
+        return redirect(url_for('login'))
 
+
+@app.route('/<string:id>/delete')
+def delete_short_url(id):
+        if user_logged_in():
+                if request.method=='GET':
+                        db_links.delete_one({'_id':ObjectId(id)})
+                        return redirect(url_for('index'))
+        return redirect(url_for('login'))
+
+
+@app.route('/<string:short_code>')
+def increment_and_go(short_code):
+        url_document = db_links.find_one({'short_code':short_code})
+        if  url_document is None:
+                return '<h4>Not a valid short URL. Please log-in to your account to get a list'
+        db_links.update_one({'short_code':short_code},{'$inc':{'count':1}})
+        return redirect(url_document['url'])
                 
 #Other supplementary functions
 def user_logged_in():

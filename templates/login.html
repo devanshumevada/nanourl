@@ -356,16 +356,23 @@ switchers.forEach(item => {
 })
 
   {% if user_not_exists %}
-    alert(' Such a User Does not exists');
+    alert('Wrong email or password');
   {% endif %}
 
   {% if user_already_exists %}
     alert('User already Exists');
   {% endif %}
 
-  {% if account_verification %}
+  {% if account_verified %}
      alert('Your account has now been verified, please log-in');
-  {% endif %}  
+  {% endif %}
+  {% if account_verification is false %}
+     alert('Please verify your account');
+  {% endif %}
+
+  {% if email_sent %}
+     alert('Account verification sent, please check your email');
+  {% endif %}    
   </script>
 
   <h5 align='center' style="color: white;">Login Template: "Animated Form" by <a style="text-decoration: none; color: grey;" href="https://codepen.io/frontendmax">Maxim Konoval</a></h5>

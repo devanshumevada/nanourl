@@ -6,11 +6,11 @@ from bson import ObjectId
 @app.route('/')
 def index():
         if 'user' not in session:
-                return render_template('login.html')
+                return redirect(url_for('login'))
+                #return render_template('login.html', email_not_sent=request.args.get('email_not_sent'), email_sent=request.args.get('email_sent'),account_verification=request.args.get('account_verification'))
         else:
                 return redirect(url_for('dashboard'))
                 
-
 
 @app.route('/dashboard')
 def dashboard():

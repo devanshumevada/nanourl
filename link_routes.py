@@ -29,7 +29,7 @@ def delete_short_url(id):
                 if request.method=='GET':
                         db_links.delete_one({'_id':ObjectId(id)})
                         return redirect('/')
-        return redirect('/login')
+        return redirect('/dashboard')
 
 
 @app.route('/<string:short_code>')

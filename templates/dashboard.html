@@ -1,51 +1,73 @@
 {% extends "base.html" %}
+{% block header%}
+  {% block title %}Dashboard{% endblock %}
+{% endblock %}
 {% block content%}
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">URL Shortener</a>
+    <a class="navbar-brand" href="/dashboard">NanoURL</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
   
     <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-      <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+      <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
         <li class="nav-item active">
           <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Edit Profile</a>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {{user['name']}} 
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="#">Edit Profile</a>
+            <a class="dropdown-item" href="/logout">Log Out</a>
+          </div>
         </li>
       </ul>
-     <a href="/logout" class="btn btn-danger">Logout</a>
     </div>
   </nav>
 
   <div class="container">
-      <div class="row">
-        <button style="width: 200px; margin-top: 30px; position: absolute; left: 50%; margin-left: -100px;" id="shorten_url_button" type="button" class="btn btn-primary center-block" data-toggle="modal" data-target="#add_link_modal">Shorten a URL</button>
-        <div class="modal fade" id="add_link_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">Paste the URL in the textbox below to shorten it</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                  <form id="url_form" method="POST" action="/shorten_url">
-                    <div class="form-group">
-                      <label for="message-text" class="col-form-label">URL:</label>
-                      <textarea required name="url" class="form-control" id="message-text"></textarea>
-                    </div>
-                  </form>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  <button form="url_form" type="submit" class="btn btn-primary">Shorten</button>
-                </div>
-              </div>
+    <div class="row">
+      <div class="col-md-12 jumbotron" style="margin-top: 20px;">
+        <h4>Generate a Short URL</h4>
+        <form action="/shorten_url" method="POST" class="form-inline">
+            <div class="form-group" style="margin-right: 10px;">
+                <label for="url" style="margin-right: 5px;">URL</label>
+                <textarea name="url" id="url" cols="100" rows="2"></textarea>
             </div>
-          </div>
+            <button type="submit" class="btn btn-success">Generate</button>
+        </form>
+
+    </div>
+    </div>
+
+    <div class="row">
+      {% if links.count()==0 %}
+        <h4 align='center'>You don't have any links</h4>
+  
+      {% else %}
+      <table class="table table-striped">
+        <thead align="center">
+            <th scope="col">Original URL</th>
+            <th scope="col">Short URL</th>
+            <th scope="col">Count</th>
+            <th scope="col">Delete</th>
+        </thead>
+        <tbody>
+          {% for link in links %}
+              <tr align="center">
+                <td>{{link['url']}}</td>
+                <td><a href="/{{link['short_code']}}" target="_blank">http://127.0.0.1:5000/{{link['short_code']}}</a></td>
+                <td>{{link['count']}}</td>
+                <td><a class="btn btn-danger" href="/{{link['_id']|string}}/delete">Delete</a></td>
+              </tr>
+          {% endfor %}
+        </tbody>
+        </table>
+      {% endif %}
       </div>
   </div>
+
+ 
 {% endblock %}

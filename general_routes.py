@@ -14,7 +14,7 @@ def index():
 
 @app.route('/dashboard')
 def dashboard():
-        return render_template('dashboard.html',links=db_links.find({'_id':ObjectId(session['user'])}),user=db_user.find_one({'_id':ObjectId(session['user'])}), url_not_valid=request.args.get('url_not_valid'))
+        return render_template('dashboard.html',links=db_links.find({'user':session['user']}),user=db_user.find_one({'_id':ObjectId(session['user'])}), url_not_valid=request.args.get('url_not_valid'))
 
 
 

@@ -13,7 +13,7 @@ def register():
         if request.method=='POST':
                 name,email,password = request.form['name'], request.form['email'], request.form['password']
                 if db_user.find({'email':email}).count()>0:
-                        return render_template('login.html', user_already_exists=True)
+                        return redirect(url_for('login',user_already_exists=True))
                 user=db_user.insert_one({'name':name,'password':password,'email':email,'is_verified':0})
                 send_account_verification_email(email, str(user.inserted_id))
                 return redirect(url_for('login',email_sent=True))
@@ -32,7 +32,7 @@ def login():
                else:
                         session['user']=str(user['_id'])
                         return redirect('/')
-        return render_template('login.html')
+        return render_template('login.html', user_already_exists=request.args.get('user_already_exists'),email_sent=request.args.get('email_sent'))
 
 @app.route('/logout')
 def logout():

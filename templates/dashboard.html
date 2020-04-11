@@ -47,6 +47,7 @@
         <h4 align='center'>You don't have any links</h4>
   
       {% else %}
+      <div class="table-responsive">
       <table class="table table-striped">
         <thead align="center">
             <th scope="col">Original URL</th>
@@ -56,15 +57,16 @@
         </thead>
         <tbody>
           {% for link in links %}
-              <tr align="center">
+              <tr align="center" style="max-width: 100%;">
                 <td>{{link['url']}}</td>
-                <td><a href="/{{link['short_code']}}" target="_blank">http://nanourl1.herokuapp.com/{{link['short_code']}}</a></td>
+                <td><a href="/{{link['short_code']}}" target="_blank">http://www.nanourl.xyz/{{link['short_code']}}</a></td>
                 <td>{{link['count']}}</td>
                 <td><a class="btn btn-danger" href="/{{link['_id']|string}}/delete">Delete</a></td>
               </tr>
           {% endfor %}
         </tbody>
         </table>
+        </div>
       {% endif %}
       </div>
   </div>

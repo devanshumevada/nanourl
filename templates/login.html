@@ -363,9 +363,6 @@ switchers.forEach(item => {
     alert('User already Exists');
   {% endif %}
 
-  {% if account_verified %}
-     alert('Your account has now been verified, please log-in');
-  {% endif %}
   {% if account_verification is false %}
      alert('Please verify your account');
   {% endif %}

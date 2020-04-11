@@ -41,5 +41,7 @@ def logout():
 
 @app.route('/<string:user_id>/verify')
 def verify_user_account(user_id):
+        if db_user.find_one({'_id':ObjectId(user_id)})['is_verified']==1:
+                return '<h4>Account already verified, please <a href="/login">Log In</a></h4>'
         db_user.update_one({'_id':ObjectId(user_id)},{'$set':{'is_verified':1}})
-        return '<h4>Account Verified!<a href="/login"> Click Here</a> to log in'
+        return '<h4>Account Verified! <a href="/login">Click Here</a> to log in'

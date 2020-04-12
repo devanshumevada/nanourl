@@ -1,4 +1,4 @@
-from flask import Flask,session
+from flask import Flask
 from config import SECRET_KEY
 
 app = Flask(__name__)

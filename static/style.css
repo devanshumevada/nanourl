@@ -7,7 +7,6 @@
 }
 body {
 	font-family: 'open sans', sans-serif;
-	margin: 10px;
 }
 .forms {
 	background: #fff;
@@ -107,3 +106,7 @@ body {
 .forms .button:hover, .button:focus { background: #56ae26; }
 .text-p { text-align: right; }
 .text-p a { color: #1383ea; }
+
+textarea {
+	max-width: 100%;
+}

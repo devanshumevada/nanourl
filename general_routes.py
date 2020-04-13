@@ -2,6 +2,7 @@ from app import app
 from flask import render_template, url_for, request, session, redirect
 from db import db_user, db_links
 from bson import ObjectId
+from helper import get_current_user, get_current_user_links
 
 @app.route('/')
 def index():
@@ -14,7 +15,7 @@ def index():
 
 @app.route('/dashboard')
 def dashboard():
-        return render_template('dashboard.html',links=db_links.find({'user':session['user']}),user=db_user.find_one({'_id':ObjectId(session['user'])}), url_not_valid=request.args.get('url_not_valid'))
+        return render_template('dashboard.html',links=get_current_user_links(),user=get_current_user(), url_not_valid=request.args.get('url_not_valid'))
 
 
 

@@ -71,7 +71,22 @@
 	</div>
   </div>
 
-<h6 align="center">Login Template Source: <a href="http://w3iscool.com/login-sign-up-form-in-tab-style/">w3iscool</a></h4>
+<h6 style="margin-bottom: 30px;" align="center">Login Template Source: <a href="http://w3iscool.com/login-sign-up-form-in-tab-style/">w3iscool</a></h4>
+{% with messages = get_flashed_messages(with_categories=true) %}
+	{% if messages %}
+		<div class="container">
+			<div class="row">
+				{% for category,message in messages %}
+					{% if category == 'user_auth' %}
+						<div style="width:500px; left: 50%; margin-left: -250px;" class="alert alert-danger" role="alert" align="center">{{message}}</div>
+					{% else %}
+						<div style="width:500px; left: 50%; margin-left: -250px;" class="alert alert-primary" role="alert" align="center">{{message}}</div>
+					{% endif %}
+				{% endfor %}
+			</div>
+		</div>
+	{% endif %}
+{% endwith %}
 <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
 <script type="text/javascript">
 $(document).ready(function(){

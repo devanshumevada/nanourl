@@ -9,4 +9,4 @@ from link_routes import *
 from general_routes import *
 
 if __name__=='__main__':
-    app.run()
+    app.run(debug=True)

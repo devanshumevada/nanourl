@@ -1,5 +1,5 @@
 from app import app
-from flask import request, redirect, url_for, session, render_template
+from flask import request, redirect, url_for, session, render_template, flash
 from db import db_links, db_user
 from helper import user_logged_in
 from send_emails import send_account_verification_email, send_forgot_password_instructions_email
@@ -13,10 +13,12 @@ def register():
         if request.method=='POST':
                 name,email,password = request.form['name'], request.form['email'], request.form['password']
                 if db_user.find({'email':email}).count()>0:
-                        return redirect(url_for('login',user_already_exists=True))
+                        flash('User with these credentials already exists!','user_auth')
+                        return redirect(url_for('login'))
                 user=db_user.insert_one({'name':name,'password':password,'email':email,'is_verified':0})
                 send_account_verification_email(email, str(user.inserted_id))
-                return redirect(url_for('login',email_sent=True))
+                flash('A verification email has been sent to your registered email account','email')
+                return redirect(url_for('login'))
         return redirect('/login')
 
 @app.route('/login',methods=['GET','POST'])
@@ -26,9 +28,11 @@ def login():
         if request.method=='POST':
                user=db_user.find_one({'email':request.form['email'],'password':request.form['password']})
                if user is None:
-                       return redirect(url_for('login',user_not_exists=True))
+                       flash('User with these credentials does not exists!','user_auth')
+                       return redirect(url_for('login'))
                if user['is_verified']==0:
-                       return redirect(url_for('login', account_verification=False))
+                       flash('Your account hasnt been verified!','user_auth')
+                       return redirect(url_for('login'))
                else:
                         session['user']=str(user['_id'])
                         return redirect('/')
@@ -58,6 +62,8 @@ def forgot_password():
         email = request.form['recipient-email']
         user = db_user.find_one({'email':email})
         if user is None:
-                return redirect(url_for('login',user_not_exists=True))
+                flash('User with this credential does not exists!','user_auth')
+                return redirect(url_for('login'))
         send_forgot_password_instructions_email(user['email'],user['password'])
-        return redirect(url_for('login', forgot_password_instructions=True))
+        flash('An email containing your account password has been sent on your registered email','email')
+        return redirect(url_for('login'))

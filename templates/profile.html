@@ -3,10 +3,15 @@
     {% block title %}Profile{% endblock %}
 {% endblock %}
 {% block content %}
+
 <div class="container">
     <div class="row">
-        <div class="col-md-4">
-            <div class="text-center" style="margin-bottom: 10px;">
+        <div class="col-sm-12">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Update Password</h5>
+              <p class="card-text">Click on the button to change your password</p>
+              <div style="margin-bottom: 10px;">
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalpassword">Update Password</button>
             </div>
             <div class="modal fade" id="exampleModalpassword" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -38,11 +43,18 @@
                   </div>
                 </div>
               </div>
-        </div> <!-- end of update password entities-->
+            </div>
+          </div>
+        </div> <!--Update Password end-->
 
 
-        <div class="col-md-4">
-            <div class="text-center" style="margin-bottom: 10px;">
+
+        <div class="col-sm-12">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Update Name</h5>
+              <p class="card-text">Click on the button to change your name</p>
+              <div style="margin-bottom: 10px;">
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalname">Update Name</button>
             </div>
             <div class="modal fade" id="exampleModalname" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -70,39 +82,49 @@
                   </div>
                 </div>
               </div>
-        </div> <!-- end of update name entities -->
-
-
-        <div class="col-md-4">
-            <div class="text-center" style="margin-bottom: 10px;">
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalemail">Update Email</button>
             </div>
-            <div class="modal fade" id="exampleModalemail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title" id="exampleModalLabelemail">Update Email</h5>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div>
-                    <div class="modal-body">
-                      <form id="update-email-form" method="POST" action="/edit_profile">
-                        <div class="form-group">
-                          <label for="name" class="col-form-label">Email</label>
-                          <input type="text" class="form-control" id="email" name="email" value="{{user['email']}}" required>                        </div>
-                      </form>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                      <button type="submit" class="btn btn-primary" form="update-name-form">Update Email</button>
+          </div>
+        </div> <!--Update name end-->
+
+        <div class="col-sm-12">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Update Email</h5>
+                <p class="card-text">Click on the button to update your email</p>
+                <div style="margin-bottom: 10px;">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalemail">Update Email</button>
+                </div>
+                <div class="modal fade" id="exampleModalemail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabelemail">Update Email</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <form id="update-email-form" method="POST" action="/edit_profile">
+                            <div class="form-group">
+                              <label for="name" class="col-form-label">Email</label>
+                              <input type="text" class="form-control" id="email" name="email" value="{{user['email']}}" required>
+                              <input type="hidden" name="type" value="email">
+                            </div>
+                          </form>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                          <button type="submit" class="btn btn-primary" form="update-email-form">Update Email</button>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
               </div>
-        </div>
+            </div>
+          </div> <!--end of Update Email-->
     </div>
 </div>
+
 
 {% with messages = get_flashed_messages(with_categories=true) %}
 	{% if messages %}

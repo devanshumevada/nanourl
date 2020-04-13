@@ -110,3 +110,8 @@ body {
 textarea {
 	max-width: 100%;
 }
+
+.card {
+	margin: 20px;
+	background-color: lightgray;
+}

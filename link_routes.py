@@ -1,11 +1,11 @@
-#all the routes that are related to operation on links
 from app import app
 from flask import request, redirect, url_for, render_template, session
-from helper import user_logged_in,insert_by_key_value, find_by_key_value
+from helper import user_logged_in,insert_by_key_value, find_by_key_value, get_current_user
 from check_url import validate_url
-from db import db_links, db_user
+from db import db_links, db_user, db_log
 from generate_short_url_code import generate_short_code
 from bson import ObjectId
+from datetime import datetime
 
 @app.route('/shorten_url', methods=['POST','GET'])
 def shorten_url():
@@ -33,9 +33,15 @@ def delete_short_url(id):
 
 
 @app.route('/<string:short_code>')
-def increment_and_go(short_code):
+def increment_go_and_log(short_code):
         url_document = find_by_key_value('links',short_code=short_code)
         if  url_document is None:
                 return '<h4>Not a valid short URL. Please log-in to your account to get a list'
         db_links.update_one({'short_code':short_code},{'$inc':{'count':1}})
+        insert_by_key_value('logs',time_date=str(datetime.now()),platform=request.user_agent.platform, browser=request.user_agent.browser, language=request.user_agent.language, short_code=short_code)
         return redirect(url_document['url'])
+
+@app.route('/<string:short_code>/logs')
+def short_link_usage_log(short_code):
+        usage_logs = db_log.find({'short_code':short_code})
+        return render_template('short_link_log.html',usage_logs=usage_logs,short_code=short_code,user=get_current_user())

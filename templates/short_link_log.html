@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block header %}
+    {% block title %}Usage Log{% endblock %}
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div style="margin: 10px;" class="col-md-12 alert alert-warning"><h4>Usage log of http://www.nanourl.xyz/{{short_code}}</h4></div>
+        </div>
+
+        {% if usage_logs.count() > 0 %}
+        <div class="table-responsive">
+            <table class="table table-striped">
+              <thead align="center">
+                  <th scope="col">Time and Date</th>
+                  <th scope="col">Platform</th>
+                  <th scope="col">Browser</th>
+                  <th scope="col">Language</th>
+              </thead>
+              <tbody>
+                {% for entry in usage_logs %}
+                    <tr align="center" style="max-width: 100%;">
+                      <td>{{entry['time_date']}}</td>
+                      <td>{{entry['platform']}}</td>
+                      <td>{{entry['browser']}}</td>
+                      <td>{{entry['language']}}</td>
+                    </tr>
+                {% endfor %}
+              </tbody>
+              </table>
+              </div>
+        {% else %}
+            <div class="row">
+                <div class="col-md-12"><h6>No usage log enteries for this short link!</h6></div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

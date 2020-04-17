@@ -30,6 +30,7 @@
             <th scope="col">Short URL</th>
             <th scope="col">Count</th>
             <th scope="col">Delete</th>
+            <th scope="col">View Usage</th>
         </thead>
         <tbody>
           {% for link in links %}
@@ -38,6 +39,7 @@
                 <td><a href="/{{link['short_code']}}" target="_blank">http://www.nanourl.xyz/{{link['short_code']}}</a></td>
                 <td>{{link['count']}}</td>
                 <td><a class="btn btn-danger" href="/{{link['_id']|string}}/delete">Delete</a></td>
+                <td><a class="btn btn-dark" href="/{{link['short_code']}}/logs">View Usage</a></td>
               </tr>
           {% endfor %}
         </tbody>

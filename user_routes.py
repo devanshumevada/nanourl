@@ -1,7 +1,7 @@
 from app import app
 from flask import request, redirect, url_for, session, render_template, flash
-from db import db_links, db_user
-from helper import user_logged_in, find_by_key_value, update_by_key_value, get_current_user, insert_by_key_value
+from db import db_links, db_user, db_token
+from helper import user_logged_in, find_by_key_value, update_by_key_value, get_current_user, insert_by_key_value, generate_forgot_password_token
 from send_emails import send_account_verification_email, send_forgot_password_instructions_email
 from bson import ObjectId
 
@@ -58,9 +58,22 @@ def forgot_password():
         if user is None:
                 flash('User with this credential does not exists!','user_auth')
                 return redirect(url_for('login'))
-        send_forgot_password_instructions_email(user['email'],user['password'])
-        flash('An email containing your account password has been sent on your registered email','email')
+        token = generate_forgot_password_token()
+        insert_by_key_value('tokens',token=token, user=str(user['_id']))
+        send_forgot_password_instructions_email(user['email'],token)
+        flash('Instructions to reset your password have been sent on your registered email account','email')
         return redirect(url_for('login'))
+
+@app.route('/<string:token>/reset_password',methods=['GET','POST'])
+def reset_password(token):
+        if request.method=='POST':
+                new_password = request.form['password']
+                user_id = find_by_key_value('tokens',token=token)['user']
+                update_by_key_value('users',target={'_id':ObjectId(user_id)}, to_update_data={'password':new_password})
+                db_token.delete_one({'token':token})
+                flash('Password updated successfully!','success')
+                return redirect(url_for('login'))
+        return render_template('reset_password.html',token=token)
 
 @app.route('/edit_profile', methods=['GET','POST'])
 def profile():

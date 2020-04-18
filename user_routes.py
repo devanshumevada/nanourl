@@ -69,7 +69,8 @@ def reset_password(token):
         if request.method=='POST':
                 new_password = request.form['password']
                 user_id = find_by_key_value('tokens',token=token)['user']
-                update_by_key_value('users',target={'_id':ObjectId(user_id)}, to_update_data={'password':new_password})
+                print(user_id)
+                update_by_key_value('user',target={'_id':ObjectId(user_id)}, to_update_data={'password':new_password})
                 db_token.delete_one({'token':token})
                 flash('Password updated successfully!','success')
                 return redirect(url_for('login'))

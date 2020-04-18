@@ -7,7 +7,7 @@ def send_account_verification_email(user_email,user_id):
     requests.post(url=SEND_GRID_API_LINK, data=data, headers=SEND_GRID_API_HEADERS)
 
 def send_forgot_password_instructions_email(user_email, token):
-        data = json.dumps({"personalizations": [{"to": [{"email": user_email}]}],"from": {"email": "forgot_password@nanourl.xyz"},"subject": "Password reset instructions","content": [{"type": "text/plain", "value": "Please go this link to reset your password: http://127.0.0.1:5000/"+token+"/reset_password"}]})
+        data = json.dumps({"personalizations": [{"to": [{"email": user_email}]}],"from": {"email": "forgot_password@nanourl.xyz"},"subject": "Password reset instructions","content": [{"type": "text/plain", "value": "Please go this link to reset your password: http://www.nanourl.xyz/"+token+"/reset_password"}]})
         requests.post(url=SEND_GRID_API_LINK, data=data, headers=SEND_GRID_API_HEADERS)
 
     

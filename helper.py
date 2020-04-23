@@ -11,7 +11,7 @@ def insert_by_key_value(type_,**kwargs):
         for key,value in kwargs.items():
                 data[key]=value
         if type_=='user':
-                db_user.insert_one(data)
+                return db_user.insert_one(data)
         elif type_=='logs':
                 db_log.insert_one(data)
         elif type_=='tokens':

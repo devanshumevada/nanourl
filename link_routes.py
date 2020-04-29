@@ -1,9 +1,16 @@
 from app import app
-from flask import request, redirect, url_for, render_template, session
-from helper import user_logged_in,insert_by_key_value, find_by_key_value, get_current_user
-from check_url import validate_url
+from flask import (request, 
+                   redirect, 
+                   url_for, 
+                   render_template, 
+                   session)
+from helper import (user_logged_in,
+                    insert_by_key_value, 
+                    find_by_key_value, 
+                    get_current_user, 
+                    validate_url,
+                    generate_short_code)
 from db import db_links, db_user, db_log
-from generate_short_url_code import generate_short_code
 from bson import ObjectId
 from datetime import datetime
 

@@ -1,8 +1,20 @@
 from app import app
-from flask import request, redirect, url_for, session, render_template, flash
+from flask import (request, 
+                   redirect, 
+                   url_for, 
+                   session, 
+                   render_template, 
+                   flash)
 from db import db_links, db_user, db_token
-from helper import user_logged_in, find_by_key_value, update_by_key_value, get_current_user, insert_by_key_value, generate_forgot_password_token
-from send_emails import send_account_verification_email, send_forgot_password_instructions_email
+from helper import (user_logged_in, 
+                    find_by_key_value, 
+                    update_by_key_value, 
+                    get_current_user, 
+                    insert_by_key_value, 
+                    generate_forgot_password_token, 
+                    check_password,
+                    send_account_verification_email,
+                    send_forgot_password_instructions_email)
 from bson import ObjectId
 
 
@@ -14,6 +26,9 @@ def register():
                 name,email,password = request.form['name'], request.form['email'], request.form['password']
                 if db_user.find({'email':email}).count()>0:
                         flash('User with these credentials already exists!','user_auth')
+                        return redirect(url_for('login'))
+                if check_password(password) is None:
+                        flash('Password should have Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character','user_auth')
                         return redirect(url_for('login'))
                 user=insert_by_key_value('user',name=name,password=password,email=email,is_verified=0)
                 send_account_verification_email(email, str(user.inserted_id))

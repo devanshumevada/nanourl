@@ -1,5 +1,4 @@
 from flask import Flask
-from flask_restful import Api
 from config import SECRET_KEY
 
 app = Flask(__name__)

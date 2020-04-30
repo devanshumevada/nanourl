@@ -23,6 +23,7 @@
                     <li> /api/links - GET : To get all shorted links and related information by a particular user</li>
                     <li>/api/link - POST: To short a link. The request body should be the json data in the form of {'url':URL_TO_BE_SHORTED}</li>
                     <li>/api/link - GET: With a 'short_code' parameter to get related information about the shorted url</li>
+                    <li>/api/link?short_code=SHORT_CODE - DELETE: Deletes the short url from the database</li>
                 </ul>
                 <p> All of the requests mentioned above should include Authorization token as 'Authorization':AUTH TOKEN in the request header</p>
               </div>

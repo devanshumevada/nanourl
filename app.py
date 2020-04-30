@@ -11,4 +11,4 @@ from general_routes import *
 from api_routes import *
 
 if __name__=='__main__':
-    app.run(debug=True)
+    app.run()

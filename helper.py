@@ -6,9 +6,11 @@ import re
 import string
 from config import (SEND_GRID_API_KEY, 
                     SEND_GRID_API_LINK, 
-                    SEND_GRID_API_HEADERS)
+                    SEND_GRID_API_HEADERS,
+                    SECRET_KEY)
 import requests
 import json
+import jwt
 
 url_re = "^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$"
 password_re = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
@@ -72,15 +74,21 @@ def validate_url(url):
         return re.match(url_re,url)
 
 def generate_short_code():
-    return str(''.join(secrets.choice(string.ascii_uppercase + string.digits) for i in range(6)))
+        return str(''.join(secrets.choice(string.ascii_uppercase + string.digits) for i in range(6)))
 
 
 
 # Email helper functions
 def send_account_verification_email(user_email,user_id):
-    data = json.dumps({"personalizations": [{"to": [{"email": user_email}]}],"from": {"email": "verify_nanourl@nanourl.xyz"},"subject": "Please verify your user account","content": [{"type": "text/plain", "value": "Please verify your email by going to http://www.nanourl.xyz/"+user_id+"/verify"}]})
-    requests.post(url=SEND_GRID_API_LINK, data=data, headers=SEND_GRID_API_HEADERS)
+        data = json.dumps({"personalizations": [{"to": [{"email": user_email}]}],"from": {"email": "verify_nanourl@nanourl.xyz"},"subject": "Please verify your user account","content": [{"type": "text/plain", "value": "Please verify your email by going to http://www.nanourl.xyz/"+user_id+"/verify"}]})
+        requests.post(url=SEND_GRID_API_LINK, data=data, headers=SEND_GRID_API_HEADERS)
 
 def send_forgot_password_instructions_email(user_email, token):
         data = json.dumps({"personalizations": [{"to": [{"email": user_email}]}],"from": {"email": "forgot_password@nanourl.xyz"},"subject": "Password reset instructions","content": [{"type": "text/plain", "value": "Please go this link to reset your password: http://www.nanourl.xyz/"+token+"/reset_password"}]})
         requests.post(url=SEND_GRID_API_LINK, data=data, headers=SEND_GRID_API_HEADERS)
+
+
+# Api helper functions
+def get_user_api_token():
+        return jwt.encode({'identity':session['user']},SECRET_KEY, algorithm='HS256')
+

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block header%}
+  {% block title %}Api Token{% endblock %}
+{% endblock %}
+{% block content %}
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Api Access Token:</h5>
+              <p class="card-text">{{token}}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">How to use the NanoURL Api</h5>
+              <div class="card-text">
+                <ul style="list-style: none;">
+                    <li> /api/links - GET : To get all shorted links and related information by a particular user</li>
+                    <li>/api/link - POST: To short a link. The request body should be the json data in the form of {'url':URL_TO_BE_SHORTED}</li>
+                    <li>/api/link - GET: With a 'short_code' parameter to get related information about the shorted url</li>
+                </ul>
+                <p> All of the requests mentioned above should include Authorization token as 'Authorization':AUTH TOKEN in the request header</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endblock %}

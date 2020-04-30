@@ -46,7 +46,7 @@ def create_or_render_link():
             return jsonify({'message':'short_code parameter either is not passed or is Null'}), 400
         
         # Checking if entry exists in the database
-        data = db_links.find_one({'short_code':request.args['short_code']})
+        data = db_links.find_one({'short_code':request.args['short_code'].upper()})
         if data is None:
             return jsonify({'message':'No such shorted URL exists'}),404
         return jsonify({'url':data['url'],'short_url':'http://www.nanourl.xyz/'+data['short_code'], 'usage_count':data['count']})

@@ -9,10 +9,12 @@ from helper import (user_logged_in,
                     find_by_key_value, 
                     get_current_user, 
                     validate_url,
-                    generate_short_code)
+                    get_user_api_token)
 from db import db_links, db_user, db_log
 from bson import ObjectId
 from datetime import datetime
+import requests
+import json
 
 @app.route('/shorten_url', methods=['POST','GET'])
 def shorten_url():
@@ -22,8 +24,7 @@ def shorten_url():
                         url = request.form['url']
                         if validate_url(url) is None:
                                 return redirect(url_for('dashboard',url_not_valid=True))
-                        short_code = generate_short_code()
-                        insert_by_key_value('links',url=url,short_code=short_code,user=session['user'],count=0)
+                        requests.post('http://www.nanourl.xyz/api/link',json={'url':url},headers={'Authorization':get_user_api_token()})                       
                         return redirect('/')
                 #On getting a GET request
                 return redirect('/')

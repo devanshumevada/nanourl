@@ -10,7 +10,7 @@ from helper import (get_user_api_token,
                     generate_short_code)
 
 # Resource access and creation routes
-@app.route('/api/link', methods=['GET','POST'])
+@app.route('/api/link', methods=['GET','POST','DELETE'])
 def create_or_render_link():
     if 'Authorization' not in request.headers:
             return jsonify({'message':'Authorization token not found in the headers'}), 401
@@ -49,7 +49,17 @@ def create_or_render_link():
         data = db_links.find_one({'short_code':request.args['short_code'].upper()})
         if data is None:
             return jsonify({'message':'No such shorted URL exists'}),404
-        return jsonify({'url':data['url'],'short_url':'http://www.nanourl.xyz/'+data['short_code'], 'usage_count':data['count']})
+        return jsonify({'url':data['url'],'short_url':'http://www.nanourl.xyz/'+data['short_code'], 'usage_count':'count'})
+
+    elif request.method=='DELETE':
+        # Checking if short_code parameter has been passed or not
+        if 'short_code' not in request.args or request.args['short_code']=='':
+            return jsonify({'message':'short_code parameter either is not passed or is Null'}), 400
+        result = db_links.delete_one({'short_code':request.args['short_code'].upper()})
+        if result is None:
+            return jsonify({'message':'No such link in the database'})
+        return jsonify({'message':'Successfully deleted'})
+
 
 
 @app.route('/api/links')

@@ -11,3 +11,10 @@
 3. Deployed On: **Heroku**
 4. Database: **MongoDB**
 
+### Api Routes and usage
+1. **/api/links - GET**: Returns all shorted URLs and related metadata for a particular user
+2. **/api/link - POST**: Short a long URL. Json data with the format {"url":URL_TO_BE_SHORTED} needs to be passed within the request body
+3. **/api/link?short_code=SHORT_CODE**: Returns the metadata of a short url
+
+**All the API routes mentioned above need 'Authorization':AUTH_TOKEN in the header. Auth token can be obtained from a user's account dashboard**
+

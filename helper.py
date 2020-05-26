@@ -36,9 +36,7 @@ def get_current_user_links():
         links = mc.get(session['user'])
         if links is None:
                 mc.set(session['user'],list(db_links.find({'user':session['user']})))
-                print('Setting and then getting')
                 return mc.get(session['user'])
-        print('Getting Directly from cache')
         return links
 
 def generate_forgot_password_token():

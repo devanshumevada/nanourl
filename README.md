@@ -10,6 +10,7 @@
 2. Email Api: **SendGrid**
 3. Deployed On: **Heroku**
 4. Database: **MongoDB**
+5. Caching: **MemCachier**
 
 ------------
 

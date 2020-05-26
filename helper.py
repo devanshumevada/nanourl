@@ -47,10 +47,7 @@ def check_password(password):
 
 
 # Database helper functions
-def insert_by_key_value(type_,**kwargs):
-        data={}
-        for key,value in kwargs.items():
-                data[key]=value
+def insert_by_key_value(type_,**data):
         if type_=='user':
                 return db_user.insert_one(data)
         elif type_=='logs':
@@ -61,10 +58,7 @@ def insert_by_key_value(type_,**kwargs):
                 link=db_links.insert_one(data)
                 return link
 
-def find_by_key_value(type_,**kwargs):
-        target=dict()
-        for key,value in kwargs.items():
-                target[key]=value
+def find_by_key_value(type_,**target):
         if type_=='user':
                 return db_user.find_one(target)
         elif type_=='logs':

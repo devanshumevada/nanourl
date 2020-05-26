@@ -7,11 +7,17 @@ import string
 from config import (SEND_GRID_API_KEY, 
                     SEND_GRID_API_LINK, 
                     SEND_GRID_API_HEADERS,
-                    SECRET_KEY)
+                    SECRET_KEY,
+                    MEMC_PASSWORD,
+                    MEMC_SERVERS,
+                    MEMC_USERNAME)
 import requests
 import json
 import jwt
+import bmemcached
 
+mc = bmemcached.Client(MEMC_SERVERS, username=MEMC_USERNAME, password=MEMC_PASSWORD)
+mc.enable_retry_delay(True)
 url_re = "^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$"
 password_re = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
 
@@ -23,8 +29,17 @@ def user_logged_in():
 def get_current_user():
         return db_user.find_one({'_id':ObjectId(session['user'])})
 
+def update_cache_on_insert_or_delete_or_use():
+        mc.set(session['user'],list(db_links.find({'user':session['user']})))
+
 def get_current_user_links():
-        return db_links.find({'user':session['user']})
+        links = mc.get(session['user'])
+        if links is None:
+                mc.set(session['user'],list(db_links.find({'user':session['user']})))
+                print('Setting and then getting')
+                return mc.get(session['user'])
+        print('Getting Directly from cache')
+        return links
 
 def generate_forgot_password_token():
         return secrets.token_hex(12)

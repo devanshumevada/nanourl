@@ -7,13 +7,15 @@ from bson import ObjectId
 from helper import (get_user_api_token, 
                     get_current_user, 
                     validate_url, 
-                    generate_short_code)
+                    generate_short_code,
+                    token_required)
+
 
 # Resource access and creation routes
+
 @app.route('/api/link', methods=['GET','POST','DELETE'])
+@token_required
 def create_or_render_link():
-    if 'Authorization' not in request.headers:
-            return jsonify({'message':'Authorization token not found in the headers'}), 401
     token = request.headers['Authorization']
     try:
         payload = jwt.decode(token, SECRET_KEY , algorithms=['HS256'])
@@ -61,11 +63,11 @@ def create_or_render_link():
         return jsonify({'message':'Successfully deleted'})
 
 
-
 @app.route('/api/links')
+@token_required
 def get_all_links(): 
-    if 'Authorization' not in request.headers:
-        return jsonify({'message':'Authorization token not found in the headers'}), 401
+    #if 'Authorization' not in request.headers:
+    #    return jsonify({'message':'Authorization token not found in the headers'}), 401
     token = request.headers['Authorization']
     try:
         payload = jwt.decode(token, SECRET_KEY , algorithms=['HS256'])

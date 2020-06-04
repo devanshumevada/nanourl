@@ -1,4 +1,4 @@
-from flask import session
+from flask import session, jsonify, request
 from db import db_user, db_links, db_log, db_token
 from bson import ObjectId
 import secrets
@@ -15,6 +15,7 @@ import requests
 import json
 import jwt
 import bmemcached
+from functools import wraps
 
 mc = bmemcached.Client(MEMC_SERVERS, username=MEMC_USERNAME, password=MEMC_PASSWORD)
 mc.enable_retry_delay(True)
@@ -98,4 +99,14 @@ def send_forgot_password_instructions_email(user_email, token):
 # Api helper functions
 def get_user_api_token():
         return jwt.encode({'identity':session['user']},SECRET_KEY, algorithm='HS256')
+
+def token_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'Authorization' not in request.headers:
+                return jsonify({'message':'Authorization token not found in the headers'}), 401
+        else:
+            return f(*args, **kwargs)
+    return wrap
+
 

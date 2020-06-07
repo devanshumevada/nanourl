@@ -51,7 +51,7 @@ def create_or_render_link():
         if 'short_code' not in request.args or request.args['short_code']=='':
             return jsonify({'message':'short_code parameter either is not passed or is Null'}), 400
         
-        # Checking if entry exists in the database
+        # Checking if entry already exists
         data = db_links.find_one({'user':payload['identity'],'short_code':request.args['short_code'].upper()})
         if data is None:
             return jsonify({'message':'No such shorted URL exists for this user'}),404

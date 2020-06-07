@@ -8,7 +8,10 @@ from helper import (get_user_api_token,
                     get_current_user, 
                     validate_url, 
                     generate_short_code,
-                    token_required)
+                    token_required,
+                    insert_by_key_value,
+                    get_current_user_links,
+                    update_cache_on_insert_or_delete_or_use)
 
 
 # Resource access and creation routes
@@ -38,7 +41,8 @@ def create_or_render_link():
         if validate_url(content['url']) is None:
             return jsonify({'message':'Please pass-in a proper valid URL'}), 400
         short_code = generate_short_code()
-        db_links.insert_one({'url':content['url'],'short_code':short_code,'count':0,'user':payload['identity']})
+        insert_by_key_value('link',url=content['url'],short_code=short_code,count=0,user=payload['identity'])
+        update_cache_on_insert_or_delete_or_use(payload['identity'])
         return jsonify({'message':'Resource successfully created','data':{'url':content['url'], 'short_url':'http://www.nanourl.xyz/'+short_code}}),201 
 
 
@@ -48,19 +52,20 @@ def create_or_render_link():
             return jsonify({'message':'short_code parameter either is not passed or is Null'}), 400
         
         # Checking if entry exists in the database
-        data = db_links.find_one({'short_code':request.args['short_code'].upper()})
+        data = db_links.find_one({'user':payload['identity'],'short_code':request.args['short_code'].upper()})
         if data is None:
-            return jsonify({'message':'No such shorted URL exists'}),404
-        return jsonify({'url':data['url'],'short_url':'http://www.nanourl.xyz/'+data['short_code'], 'usage_count':'count'})
+            return jsonify({'message':'No such shorted URL exists for this user'}),404
+        return jsonify({'url':data['url'],'short_url':'http://www.nanourl.xyz/'+data['short_code'], 'usage_count':data['count']})
 
     elif request.method=='DELETE':
         # Checking if short_code parameter has been passed or not
         if 'short_code' not in request.args or request.args['short_code']=='':
             return jsonify({'message':'short_code parameter either is not passed or is Null'}), 400
-        result = db_links.delete_one({'short_code':request.args['short_code'].upper()})
-        if result is None:
-            return jsonify({'message':'No such link in the database'})
-        return jsonify({'message':'Successfully deleted'})
+        if db_links.find({'user':payload['identity'],'short_code':request.args['short_code'].upper()}).count() > 0:
+            db_links.delete_one({'short_code':request.args['short_code'].upper()})
+            update_cache_on_insert_or_delete_or_use(payload['identity'])
+            return jsonify({'message':'Entry Successfully deleted'})
+        return jsonify({'message':'No such shorted link for this user in the database'})
 
 
 @app.route('/api/links')
@@ -73,13 +78,10 @@ def get_all_links():
         payload = jwt.decode(token, SECRET_KEY , algorithms=['HS256'])
         if db_user.find({'_id':ObjectId(payload['identity'])}).count()==0:
             return jsonify({'message':'No such registered user'}), 401
-        links = db_links.find({'user':payload['identity']})
-        if links.count()==0:
+        links = get_current_user_links(payload['identity'])
+        if len(links)==0:
             return jsonify({'message':'This user has not shorted any links'})
-        data = []
-        for link in links:
-            data.append({'url':link['url'],'short_url':'http://www.nanourl.xyz/'+link['short_code'],'usage_count':link['count']})
-        return jsonify({'links':data})
+        return jsonify({'links':[{'url':link['url'],'short_url':'http://www.nanourl.xyz/'+link['short_code'],'usage_count':link['count']} for link in links]})
     except:
         return jsonify({'message':'Please Pass in a valid token'}), 401
        

@@ -26,7 +26,7 @@ def shorten_url():
                         if validate_url(url) is None:
                                 return redirect(url_for('dashboard',url_not_valid=True))
                         requests.post('http://www.nanourl.xyz/api/link',json={'url':url},headers={'Authorization':get_user_api_token()}) 
-                        update_cache_on_insert_or_delete_or_use()                      
+                        update_cache_on_insert_or_delete_or_use(session['user'])                      
                         return redirect('/')
                 #On getting a GET request
                 return redirect('/')
@@ -38,7 +38,7 @@ def delete_short_url(id):
         if user_logged_in():
                 if request.method=='GET':
                         db_links.delete_one({'_id':ObjectId(id)})
-                        update_cache_on_insert_or_delete_or_use()
+                        update_cache_on_insert_or_delete_or_use(session['user'])
                         return redirect('/')
                         
         return redirect('/dashboard')
@@ -51,7 +51,7 @@ def increment_go_and_log(short_code):
                 return '<h4>Not a valid short URL. Please log-in to your account to get a list'
         db_links.update_one({'short_code':short_code},{'$inc':{'count':1}})
         insert_by_key_value('logs',time_date=str(datetime.now()),platform=request.user_agent.platform, browser=request.user_agent.browser, language=request.user_agent.language, short_code=short_code)
-        update_cache_on_insert_or_delete_or_use()
+        update_cache_on_insert_or_delete_or_use(url_document['user'])
         return redirect(url_document['url'])
 
 @app.route('/<string:short_code>/logs')

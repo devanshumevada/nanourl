@@ -30,14 +30,14 @@ def user_logged_in():
 def get_current_user():
         return db_user.find_one({'_id':ObjectId(session['user'])})
 
-def update_cache_on_insert_or_delete_or_use():
-        mc.set(session['user'],list(db_links.find({'user':session['user']})))
+def update_cache_on_insert_or_delete_or_use(user):
+        mc.set(user,list(db_links.find({'user':user})))
 
-def get_current_user_links():
-        links = mc.get(session['user'])
+def get_current_user_links(user):
+        links = mc.get(user)
         if links is None:
-                mc.set(session['user'],list(db_links.find({'user':session['user']})))
-                return mc.get(session['user'])
+                mc.set(user,list(db_links.find({'user':user})))
+                return mc.get(user)
         return links
 
 def generate_forgot_password_token():

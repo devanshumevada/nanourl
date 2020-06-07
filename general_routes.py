@@ -21,7 +21,7 @@ def index():
 @app.route('/dashboard')
 def dashboard():
         if user_logged_in():
-                return render_template('dashboard.html',links=get_current_user_links(),user=get_current_user(), url_not_valid=request.args.get('url_not_valid'))
+                return render_template('dashboard.html',links=get_current_user_links(session['user']),user=get_current_user(), url_not_valid=request.args.get('url_not_valid'))
         return redirect(url_for('login'))
 
 
